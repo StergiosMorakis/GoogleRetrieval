@@ -1,0 +1,21 @@
+Topics,Query 1 KendalT,Query 1 Jaccard,Query 2 KendalT,Query 2 Jaccard,sub-Query 2 KendalT,sub-Query 2 Jaccard
+Vacation,0.53,0.88,0.4,0.89,-0.11,1.0
+Ancient History,-0.6,1.0,-0.67,0.4,1.0,0.4
+Baby,-0.2,0.75,0.11,0.5,0.11,1.0
+Hobbies,,1.0,,1.0,,1.0
+House,0.2,0.75,0.0,1.0,0.13,0.83
+Train,0.22,1.0,-0.4,1.0,-0.4,1.0
+Library,0.4,0.89,-0.32,0.88,0.44,1.0
+Relationship,0.0,0.86,-0.6,1.0,-0.2,1.0
+Phones,0.2,0.89,0.8,1.0,0.32,1.0
+Global Warming,-0.36,0.86,-0.11,0.71,1.0,0.4
+Food,0.0,0.0,0.4,1.0,0.0,1.0
+Music,0.0,1.0,0.0,1.0,0.2,0.89
+Environmental Protection,-0.74,0.88,0.11,0.88,0.5,0.83
+Social Media,-0.63,1.0,0.14,0.5,1.0,0.4
+Product Reviews,0.4,1.0,-0.2,1.0,0.4,1.0
+Legal behaviors,-0.95,1.0,-0.4,1.0,0.6,0.75
+Charity,-0.6,0.75,0.53,1.0,-0.2,1.0
+Education,0.56,0.4,-0.11,0.0,1.0,0.0
+Health,0.0,0.33,-0.4,1.0,-0.2,1.0
+Religion,1.0,0.0,0.8,0.0,0.11,0.88

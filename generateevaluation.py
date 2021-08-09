@@ -2,29 +2,28 @@ import pandas as pd
 import numpy as np
 from scipy.stats import kendalltau
 import os
-from os import listdir
-from os.path import isfile, join
 import re
 import nltk
 
-# Get Kendal Tau value of two lists
-
-
-def computeKendalT(l1, l2):
+def compute_kendalT(l1: list, l2: list):
+    ''' get Kendal Tau value
+    '''
     l1 = l1[:min(len(l1), len(l2))]
     l2 = l2[:min(len(l1), len(l2))]
     tau, p_val = kendalltau(l1, l2)
     return tau
 
-
-def computeJaccardDistance(l1, l2):
+def compute_JaccardD(l1: list, l2: list):
+    ''' get Jaccard distance
+    '''
     return nltk.jaccard_distance(set(l1), set(l2))
 
-# Create a new DataFrame contraining the Kendal Tau values based on the common column names of the DataFrames
-# Each cell in the DataFrames contains a stringified List
-
-
-def parseDataframes(df, df2, top_k):
+def parse_dataframes(df, df2, top_k: int):
+    '''
+        apply necessary transformations on two dfs
+        each cell now contains a stringified list obj
+        return transformed result
+    '''
     common_cols = list(set(df.columns[1:]).intersection(df2.columns))
     new_cols = []
     for col in common_cols:
@@ -34,10 +33,10 @@ def parseDataframes(df, df2, top_k):
     for row in range(df.shape[0]):
         new_row = []
         for col in common_cols:
-            kendalT = computeKendalT(eval(df[col][row])[:top_k if top_k != 0 else len(
+            kendalT = compute_kendalT(eval(df[col][row])[:top_k if top_k != 0 else len(
                 df)], eval(df2[col][row])[:top_k if top_k != 0 else len(df2)])
             new_row.append(round(kendalT, 2))
-            jaccard = computeJaccardDistance(eval(df[col][row])[:top_k if top_k != 0 else len(
+            jaccard = compute_JaccardD(eval(df[col][row])[:top_k if top_k != 0 else len(
                 df)], eval(df2[col][row])[:top_k if top_k != 0 else len(df2)])
             new_row.append(round(jaccard, 2))
         result_df.loc[row] = new_row
@@ -45,10 +44,9 @@ def parseDataframes(df, df2, top_k):
     result_df = result_df.set_index('Topics')
     return result_df
 
-# Read CSVs (part A, part B) and export the combined result to a new CSV
-
-
-def mergeParts(countries):
+def merge_parts(countries: list):
+    ''' read CSVs (part A, part B) and export new result as a CSV
+    '''
     for country in countries:
         for player in range(1, 3):
             df1 = pd.read_csv('PartialResults/'+country +
@@ -61,8 +59,7 @@ def mergeParts(countries):
             df.to_csv('MergedResults/'+country+'_'+str(player) +
                       '.csv', index=False, encoding='utf-8')
 
-
-def allowMergingInput():
+def allow_merging_input():
     response = -1
     while response != 0 and response != 1:
         if response != -1:
@@ -74,11 +71,10 @@ def allowMergingInput():
             print('Not an Integer.')
     return response
 
-
-def getCountries():
+def get_countries():
     # { Country : (player, part) }
     country_dict = {}
-    for f in listdir(os.path.join(os.getcwd(), 'PartialResults')):
+    for f in os.listdir(os.path.join(os.getcwd(), 'PartialResults')):
         filename = re.match(r'^([A-z]+)_([12])(?:_([ab]))?\.csv', f)
         if filename != None:
             if filename.group(1) not in country_dict.keys():
@@ -90,12 +86,11 @@ def getCountries():
                 country_dict[filename.group(1)].append(filename.group(2))
     return list(country_dict.keys())
 
-
 if __name__ == '__main__':
-    countries = getCountries()
-    if allowMergingInput() == 1:
+    countries = get_countries()
+    if allow_merging_input() == 1:
         try:
-            mergeParts(countries)
+            merge_parts(countries)
         except:
             print('Merge_CSV process failed.')
     results = {}
@@ -110,7 +105,7 @@ if __name__ == '__main__':
         for country in countries:
             if not os.path.exists('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_PlayersAsPairs'):
                 os.mkdir('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_PlayersAsPairs')
-            parseDataframes(results.get(country + '_1'), results.get(country + '_2'), top_k) \
+            parse_dataframes(results.get(country + '_1'), results.get(country + '_2'), top_k) \
                 .to_csv('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_PlayersAsPairs/'
                         + country +
                         ('_Top' + str(top_k) if top_k != 0 else '_All')
@@ -121,7 +116,7 @@ if __name__ == '__main__':
             for country1, country2 in zip(countries, countries[1:]):
                 if not os.path.exists('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_CountriesAsPairs'):
                     os.mkdir('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_CountriesAsPairs')
-                parseDataframes(results.get(country1 + '_' + str(i)), results.get(country2 + '_' + str(i)), top_k) \
+                parse_dataframes(results.get(country1 + '_' + str(i)), results.get(country2 + '_' + str(i)), top_k) \
                     .to_csv('Results/' + ('Top_' + str(top_k) if top_k != 0 else 'All') + '_CountriesAsPairs/'
                             + country1 + '_' + country2 + '_' + str(i) +
                             ('_Top' + str(top_k) if top_k != 0 else '_All')
